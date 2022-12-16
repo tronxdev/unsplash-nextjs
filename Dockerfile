@@ -4,6 +4,9 @@ FROM node:16-alpine AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
+RUN chown node:node ./
+USER node
+
 # Confirm the installed node and npm
 RUN node -v
 RUN npm -v
