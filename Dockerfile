@@ -4,7 +4,7 @@ WORKDIR /app
 COPY package*.json ./
 ARG NODE_ENV
 ENV NODE_ENV $NODE_ENV
-RUN npm install
+RUN npm install --force
 
 # Stage 2: build
 FROM node:16-alpine AS builder
