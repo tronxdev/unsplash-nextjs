@@ -12,6 +12,7 @@ export default async function handler(
     if (req.method === 'GET') {
       const collectionId: string = req.query.id as string;
 
+      await unsplash.topics.list();
       const { response } = await unsplash.collections.get({
         collectionId,
       });

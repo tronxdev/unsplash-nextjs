@@ -1,25 +1,43 @@
+import React from 'react';
 import clsx from 'clsx';
 import Link from 'next/link';
 
-export const TabNavItem = ({
-  children,
-  href,
-  isActive,
-}: {
-  children: React.ReactNode;
+interface ITabNavItem {
   href: string;
   isActive?: boolean;
-}) => {
+  itemId: string;
+  children: React.ReactNode;
+  className?: string;
+}
+
+export default function TabNavItem({
+  children,
+  href,
+  itemId,
+  isActive,
+  className,
+}: ITabNavItem) {
   return (
-    <Link
-      href={href}
-      className={clsx('rounded-lg px-3 py-1 text-sm font-medium', {
-        'bg-zinc-700 text-zinc-100 hover:bg-zinc-500 hover:text-white':
-          !isActive,
-        'bg-vercel-blue text-white': isActive,
+    <div
+      className={clsx('flex items-center justify-center', {
+        'border-b border-b-zinc-900': isActive,
       })}
     >
-      {children}
-    </Link>
+      <Link
+        href={href}
+        className={clsx(
+          'block h-full w-fit px-3 py-2 text-xs font-semibold capitalize tracking-wider hover:text-zinc-900',
+          {
+            'text-zinc-500': !isActive,
+            'text-zinc-900': isActive,
+            'border-b border-b-zinc-900': isActive,
+            'border-none': !isActive,
+          },
+          className,
+        )}
+      >
+        {children}
+      </Link>
+    </div>
   );
-};
+}

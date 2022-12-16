@@ -60,6 +60,15 @@ export default async function handler(
         res.status(StatusCodes.OK).json(response);
       }
     }
+
+    if (req.method === 'GET' && type === 'topics') {
+      const page: number = parseInt(req.query.page as string, 10) || 1;
+      const perPage: number = parseInt(req.query.perPage as string, 10) || 10;
+
+      const { response } = await unsplash.topics.list({ page, perPage });
+
+      res.status(StatusCodes.OK).json(response);
+    }
   } catch (e) {
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
