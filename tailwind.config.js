@@ -7,6 +7,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      height: {
+        128: '32rem',
+      },
       // https://vercel.com/design/color
       colors: {
         vercel: {

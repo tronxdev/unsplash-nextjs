@@ -1,69 +1,24 @@
 # Install dependencies only when needed
-FROM node:16-alpine AS deps
+FROM node:18-alpine AS deps
 # Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
 RUN apk add --no-cache libc6-compat
-
-# Install NPM
-ENV NODE_VERSION=16.13.0
-RUN apk add --no-cache curl
-RUN curl --version
-RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
-ENV NVM_DIR=/root/.nvm
-RUN . "$NVM_DIR/nvm.sh" && nvm install ${NODE_VERSION}
-RUN . "$NVM_DIR/nvm.sh" && nvm use v${NODE_VERSION}
-RUN . "$NVM_DIR/nvm.sh" && nvm alias default v${NODE_VERSION}
-ENV PATH="/root/.nvm/versions/node/v${NODE_VERSION}/bin/:${PATH}"
-RUN node --version
-RUN npm --version
-
 WORKDIR /app
-
-# RUN chown node:node ./
-# USER node
 
 # Install dependencies based on the preferred package manager
 COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
-RUN npm install --force
 # RUN \
-#     if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
-#     elif [ -f package-lock.json ]; then npm ci; \
-#     elif [ -f pnpm-lock.yaml ]; then yarn global add pnpm && pnpm i; \
-#     else echo "Lockfile not found." && exit 1; \
-#     fi
+#   if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
+#   elif [ -f package-lock.json ]; then npm ci; \
+#   elif [ -f pnpm-lock.yaml ]; then yarn global add pnpm && pnpm i --frozen-lockfile; \
+#   else echo "Lockfile not found." && exit 1; \
+#   fi
+
+RUN npm install
 
 # Rebuild the source code only when needed
-FROM node:16-alpine AS builder
+FROM node:18-alpine AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Next.js collects completely anonymous telemetry data about general usage.
-# Learn more here: https://nextjs.org/telemetry
-# Uncomment the following line in case you want to disable telemetry during the build.
-ENV NEXT_TELEMETRY_DISABLED 1
-
-RUN yarn build
-
-# Production image, copy all the files and run next
-FROM node:16-alpine AS runner
-WORKDIR /app
-
-ENV NODE_ENV production
-ENV NEXT_TELEMETRY_DISABLED 1
-
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
-
-COPY --from=builder /app/public ./public
-
-# Automatically leverage output traces to reduce image size
-# https://nextjs.org/docs/advanced-features/output-file-tracing
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
-
-USER nextjs
-
-EXPOSE 8000
-ENV PORT 8000
-
-CMD ["node", "server.js"]
+CMD npm run dev

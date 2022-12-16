@@ -4,6 +4,7 @@ const nextConfig = {
   experimental: {
     // Required:
     appDir: true,
+    forceSwcTransforms: true,
   },
   images: {
     // domains: ['images.unsplash.com'],
@@ -18,13 +19,7 @@ const nextConfig = {
       },
     ],
   },
-  theme: {
-    extend: {
-      height: {
-        128: '32rem',
-      },
-    },
-  },
+  output: 'standalone',
 };
 
 module.exports = nextConfig;

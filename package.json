@@ -3,13 +3,10 @@
   "scripts": {
     "dev": "concurrently \"next dev\" \"tailwindcss -i styles/globals.css -o styles/dist.css -w\"",
     "dev:turbopack": "concurrently \"next dev --turbo\" \"tailwindcss -i styles/globals.css -o styles/dist.css -w\"",
-    "build": "tailwindcss -m -i styles/globals.css -o styles/dist.css && next build",
-    "dev:tailwind": "concurrently \"next dev --turbo\" \"npm run tailwind -- --watch\"",
+    "build": "tailwindcss -m -i styles/globals.css -o styles/dist.css && next build --debug",
     "start": "next start",
     "lint": "next lint",
-    "tailwind": "tailwindcss -i styles/globals.css -o styles/dist.css",
-    "format": "prettier --write \"**/*.{js,ts,tsx,md}\"",
-    "postinstall": "npm run tailwind"
+    "format": "prettier --write \"**/*.{js,ts,tsx,md}\""
   },
   "prettier": {
     "arrowParens": "always",
@@ -49,7 +46,6 @@
     "@types/react-infinite-scroller": "1.2.3",
     "@types/react-responsive-masonry": "2.1.0",
     "@types/sequelize": "4.28.14",
-    "@types/unsplash-js": "7.0.0",
     "autoprefixer": "10.4.13",
     "eslint": "8.19.0",
     "eslint-config-next": "latest",
