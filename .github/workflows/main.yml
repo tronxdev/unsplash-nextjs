@@ -1,0 +1,26 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+      - uses: akhileshns/heroku-deploy@v3.12.12 # This is the action
+        with:
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: unsplash-nextjs #Must be unique in Heroku
+          heroku_email: tronx.dev@gmail.com
+          usedocker: true
+        env:
+          HD_NODE_ENV: ${{secrets.NODE_ENV}}
+          HD_VERSION: ${{secrets.VERSION}}
+          HD_SERVER_PORT: ${{secrets.SERVER_PORT}}
+          HD_UNSPLASH_ACCESS_KEY: ${{secrets.UNSPLASH_ACCESS_KEY}}
