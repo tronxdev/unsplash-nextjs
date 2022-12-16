@@ -1,16 +1,25 @@
-FROM node:16.10-alpine
-
+# Stage 1: install dependencies
+FROM node:16-alpine AS deps
 WORKDIR /app
+COPY package*.json .
+ARG NODE_ENV
+ENV NODE_ENV $NODE_ENV
+RUN npm install
 
-# Install dependencies based on the preferred package manager
-COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
-RUN \
-    if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
-    elif [ -f package-lock.json ]; then npm ci; \
-    elif [ -f pnpm-lock.yaml ]; then yarn global add pnpm && pnpm i; \
-    else echo "Lockfile not found." && exit 1; \
-    fi
+# Stage 2: build
+FROM node:16-alpine AS builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY src ./src
+COPY public ./public
+COPY package.json next.config.js jsconfig.json ./
+RUN npm run build
 
-COPY . .
-
-CMD npm run dev
+# Stage 3: run
+FROM node:16-alpine
+WORKDIR /app
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package.json ./
+CMD ["npm", "run", "start"]
