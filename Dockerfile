@@ -1,13 +1,16 @@
 FROM node:16.10-alpine
 
-RUN mkdir -p /home/app/ && chown -R node:node /home/app
-WORKDIR /home/app
-COPY --chown=node:node . .
+WORKDIR /app
 
-USER node
+# Install dependencies based on the preferred package manager
+COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
+RUN \
+    if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
+    elif [ -f package-lock.json ]; then npm ci; \
+    elif [ -f pnpm-lock.yaml ]; then yarn global add pnpm && pnpm i; \
+    else echo "Lockfile not found." && exit 1; \
+    fi
 
-RUN npm install --frozen-lockfile
-RUN npm build
+COPY . .
 
-EXPOSE 3000
-CMD [ "npm", "run", "start" ]
+CMD npm run dev
