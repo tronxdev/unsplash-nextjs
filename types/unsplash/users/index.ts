@@ -1,6 +1,6 @@
-import { Nullable } from '@/types/typescript';
-import { Entity } from '@/types/unsplash/entities';
-import * as Photo from '@/types/unsplash/photos';
+import { Nullable } from '../../typescript';
+import { Entity } from '../entities';
+import * as Photo from '../photos';
 
 export interface Basic extends Entity {
   bio: Nullable<string>;

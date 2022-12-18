@@ -1,9 +1,18 @@
-import * as Photo from '@/types/unsplash/photos';
-import * as Collection from '@/types/unsplash/collections';
+import * as Photo from '../photos';
+import * as Collection from '../collections';
 
-export declare type SearchOrderBy = 'relevant' | 'latest';
+export enum ListPhotosOrderBy {
+  LATEST = 'latest',
+  POPULAR = 'popular',
+  OLDEST = 'oldest',
+}
 
-export declare type ColorId =
+export enum SearchPhotoOrderBy {
+  LATEST = 'latest',
+  RELEVANT = 'relevant',
+}
+
+export type ColorId =
   | 'white'
   | 'black'
   | 'yellow'
@@ -16,9 +25,9 @@ export declare type ColorId =
   | 'blue'
   | 'black_and_white';
 
-export declare type ContentFilter = 'high' | 'low';
+export type ContentFilter = 'high' | 'low';
 
-export declare enum Language {
+export enum Language {
   Afrikaans = 'af',
   Amharic = 'am',
   Arabic = 'ar',
@@ -128,14 +137,6 @@ export declare enum Language {
   ChineseSimplified = 'zh',
   ChineseTraditional = 'zh-TW',
   Zulu = 'zu',
-}
-
-export declare enum OrderBy {
-  LATEST = 'latest',
-  POPULAR = 'popular',
-  VIEWS = 'views',
-  DOWNLOADS = 'downloads',
-  OLDEST = 'oldest',
 }
 
 export type Orientation = 'landscape' | 'portrait' | 'squarish';

@@ -1,7 +1,7 @@
-import { Nullable } from '@/types/typescript';
-import { Entity } from '@/types/unsplash/entities';
-import * as User from '@/types/unsplash/users';
-import * as Collection from '@/types/unsplash/collections';
+import { Nullable } from '../../typescript';
+import { Entity } from '../entities';
+import * as User from '../users';
+import * as Collection from '../collections';
 
 interface StatValue {
   value: number;

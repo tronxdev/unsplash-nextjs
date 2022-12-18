@@ -1,6 +1,7 @@
-import { Nullable, NonEmptyArray } from '@/types/typescript';
-import { Entity } from '@/types/unsplash/entities';
-import * as Photo from '@/types/unsplash/photos';
+import { Nullable, NonEmptyArray } from '../../typescript';
+import { Entity } from '../entities';
+import * as Photo from '../photos';
+import * as User from '../users';
 
 export interface Basic extends Entity {
   cover_photo: Nullable<Photo.Basic>;
