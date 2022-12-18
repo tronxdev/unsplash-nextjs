@@ -11,6 +11,14 @@ export function middleware(request: NextRequest) {
       query('query').isString(),
       query('page').isNumeric(),
       query('perPage').isNumeric(),
+      query('orderBy').isIn([
+        'latest',
+        'oldest',
+        'popular',
+        'relevant',
+        'featured',
+        'position',
+      ]),
     ]);
 
     return res;
