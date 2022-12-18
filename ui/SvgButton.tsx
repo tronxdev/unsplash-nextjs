@@ -7,7 +7,7 @@ const DOWNLOAD: React.ReactNode = (
     viewBox="0 0 24 24"
     strokeWidth={1.5}
     stroke="currentColor"
-    className="h-5 w-5"
+    className="h-full w-full"
   >
     <path
       strokeLinecap="round"
@@ -24,7 +24,7 @@ const STAR_OUTLINE: React.ReactNode = (
     viewBox="0 0 24 24"
     strokeWidth={1.5}
     stroke="currentColor"
-    className="h-5 w-5"
+    className="h-full w-full"
   >
     <path
       strokeLinecap="round"
@@ -39,7 +39,7 @@ const STAR_SOLID: React.ReactNode = (
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 24 24"
     fill="currentColor"
-    className="h-5 w-5"
+    className="h-full w-full"
   >
     <path
       fillRule="evenodd"

@@ -19,22 +19,22 @@ export default function Photo({ photo, favorite, onFavoriteChange }: IPhoto) {
 
   return (
     <div
-      className="relative block w-full border border-zinc-500"
+      className="relative block w-full bg-zinc-100"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <img alt={photo.id} src={photo.urls.small_s3} />
+      <img alt={photo.id} src={photo.urls.regular} />
       {isHovered && (
         <div className="absolute left-0 top-0 z-10 h-full w-full bg-zinc-700 opacity-80">
-          <div className="absolute top-0 left-0 right-0 flex w-full flex-row items-center justify-end p-2">
+          <div className="absolute top-0 left-0 right-0 flex w-full flex-row items-center justify-end p-4">
             <SvgButton
               kind="STAR_OUTLINE"
-              className="text-zinc-100"
+              className="h-8 w-8 text-zinc-100"
               onClick={handleDownloadClick}
             />
           </div>
-          <div className="absolute bottom-0 left-0 right-0 flex w-full flex-row items-center justify-between p-2">
-            <div className="relative h-8 w-8 overflow-hidden rounded-full border border-zinc-300">
+          <div className="absolute bottom-0 left-0 right-0 flex w-full flex-row items-center justify-between p-4">
+            <div className="relative h-14 w-14 overflow-hidden rounded-full border border-zinc-300">
               <Image
                 alt={photo.user.username}
                 src={photo.user.profile_image.medium}
@@ -46,7 +46,7 @@ export default function Photo({ photo, favorite, onFavoriteChange }: IPhoto) {
             </div>
             <SvgButton
               kind="DOWNLOAD"
-              className="text-zinc-100"
+              className="h-8 w-8 text-zinc-100"
               onClick={handleDownloadClick}
             />
           </div>
