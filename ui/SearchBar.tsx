@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 import SearchSvg from './SearchSvg';
 
@@ -8,16 +8,34 @@ interface ISearchBar {
   className?: string;
   defaultQuery?: string;
   onQueryChange: (q: string) => void;
+  onQuerySubmit: (q: string) => void;
+  onFocus?: () => void;
 }
 
 export default function SearchBar({
   className,
   defaultQuery,
   onQueryChange,
+  onQuerySubmit,
+  onFocus,
 }: ISearchBar) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const debounced = useDebouncedCallback(onQueryChange, 1000);
+
+  const handleSubmit = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (
+        e.key === 'Enter' &&
+        inputRef &&
+        inputRef.current &&
+        inputRef.current.value
+      ) {
+        onQuerySubmit(inputRef.current.value);
+      }
+    },
+    [inputRef, onQuerySubmit],
+  );
 
   useEffect(() => {
     if (inputRef && inputRef.current && !!defaultQuery) {
@@ -36,6 +54,8 @@ export default function SearchBar({
         type={'text'}
         defaultValue={defaultQuery}
         onChange={(e) => debounced(e.target.value)}
+        onKeyDown={handleSubmit}
+        onFocus={onFocus}
         placeholder="Search..."
         className="flex w-full bg-transparent px-1 text-sm text-zinc-900 outline-none"
       />
