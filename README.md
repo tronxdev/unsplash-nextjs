@@ -7,12 +7,17 @@
 3. next@13+
 4. react@18+
 
-## Running Locally
+## Running locally
 
 1. Install dependencies: `npm i`
 2. Start the dev server: `npm run dev`
 3. Start the dev server with Turbopack: `npm run dev:turbopack`
 4. See your binaries: `npx next info`
+
+## Dockerize the app
+
+1. Build Docker image: `docker build -t unsplash-nextjs .`
+2. Deploy the image in your container and run it: `docker run --name unsplash-nextjs-container -p 0.0.0.0:8000:3000 unsplash-nextjs`
 
 **Note:** This app uses [Tailwind CSS](https://tailwindcss.com). However, Turbopack does not yet support fully [PostCSS](https://turbo.build/pack/docs/features/css#postcss), but it does support CSS and CSS Modules.
 
