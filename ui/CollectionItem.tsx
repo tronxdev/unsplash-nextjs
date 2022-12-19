@@ -1,41 +1,78 @@
-import React from 'react';
+import { useCallback, useState } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
 import * as Unsplash from '@/types/unsplash';
+import download from '@/lib/download';
+import SvgButton from '@/ui/SvgButton';
 
-interface CollectionItemProps {
-  data: Unsplash.Collection.Basic;
+interface ICollectionItem {
+  collection: Unsplash.Collection.Basic;
 }
 
-const CollectionItem: React.FC<CollectionItemProps> = ({ data }) => {
+export default function CollectionItem({ collection }: ICollectionItem) {
+  const { title, total_photos, preview_photos, user } = collection;
+
+  const [isHovered, setIsHovered] = useState<boolean>(false);
+
   return (
-    <Link
-      href={`/collections/${data.id}`}
-      className="flex flex-row space-x-4 border-b border-solid border-zinc-700 p-4 hover:bg-zinc-800"
+    <div
+      className="relative mb-8 flex aspect-[4/3] w-full flex-col bg-transparent"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="h-full w-full space-y-2">
-        <div className="flex flex-row items-baseline space-x-4">
-          <div className="text-base font-bold text-zinc-300">{data.title}</div>
-          <div className="text-xs font-light text-zinc-300">
-            {data.total_photos} photos
+      <div className="min-h-48 flex flex-1 flex-row overflow-hidden rounded-xl hover:opacity-75">
+        <div className="relative h-full w-2/3 bg-zinc-500">
+          {preview_photos && preview_photos[0] && (
+            <Image
+              alt={preview_photos[0].id}
+              src={preview_photos[0].urls.regular}
+              fill={true}
+              quality={100}
+              className="object-cover object-center"
+              sizes="640px"
+            />
+          )}
+        </div>
+        <div className="flex flex-1 flex-col">
+          <div className="relative h-1/2 w-full border-l-2 border-b-2 border-l-white border-b-white bg-green-500">
+            {preview_photos && preview_photos[1] && (
+              <Image
+                alt={preview_photos[1].id}
+                src={preview_photos[1].urls.small}
+                fill={true}
+                quality={100}
+                className="object-cover object-center"
+                sizes="640px"
+              />
+            )}
+          </div>
+          <div className="relative h-1/2 w-full border-l-2 border-l-white bg-orange-500">
+            {preview_photos && preview_photos[2] && (
+              <Image
+                alt={preview_photos[2].id}
+                src={preview_photos[2].urls.regular}
+                fill={true}
+                quality={100}
+                className="object-cover object-center"
+                sizes="640px"
+              />
+            )}
           </div>
         </div>
-        <div className="h-full overflow-hidden text-ellipsis text-xs font-light italic text-zinc-400">
-          {data.description}
+      </div>
+      <div className="w-full py-4">
+        <div className="overflow-hidden !text-ellipsis whitespace-nowrap text-lg font-semibold text-zinc-900">
+          {title}
+        </div>
+        <div className="flex flex-row items-center space-x-2 text-sm font-light text-zinc-500">
+          <span className="whitespace-nowrap">
+            {total_photos} photo{total_photos > 1 ? 's' : ''}
+          </span>
+          <span>·</span>
+          <span className="overflow-hidden !text-ellipsis whitespace-nowrap">
+            Curated by {user.first_name + ' ' + user.last_name}
+          </span>
         </div>
       </div>
-      <div className="relative h-24 w-32 bg-zinc-900">
-        <Image
-          alt={data.cover_photo?.alt_description || ''}
-          src={data.cover_photo?.urls.small_s3 || ''}
-          fill={true}
-          quality={100}
-          className="object-contain"
-          sizes="128px"
-        />
-      </div>
-    </Link>
+    </div>
   );
-};
-
-export default CollectionItem;
+}

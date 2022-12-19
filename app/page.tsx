@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import InfiniteScroll from 'react-infinite-scroller';
 import Masonry from 'react-responsive-masonry';
-import Photo from '@/ui/Photo';
+import Photo from '@/ui/PhotoItem';
 import SearchBar from '@/ui/SearchBar';
 import SearchPopover from '@/ui/SearchPopover';
 import { useGlobal } from './GlobalContext';

@@ -1,6 +1,6 @@
 import InfiniteScroll from 'react-infinite-scroller';
 import Masonry from 'react-responsive-masonry';
-import Photo from '@/ui/Photo';
+import Photo from '@/ui/PhotoItem';
 import { useCollection } from './CollectionContext';
 
 export default function Grid() {

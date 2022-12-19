@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useMemo, useState } from 'react';
 import clsx from 'clsx';
 import {
   useSelectedLayoutSegments,
@@ -11,21 +12,36 @@ import TabNavItem from '@/ui/TabNavItem';
 import HorizonalScroller from '@/ui/HorizonalScroller';
 import Loading from '@/ui/Loading';
 import { useGlobal } from './GlobalContext';
+import { useSearchPhotos } from './s/SearchPhotosContext';
+import { useSearchCollections } from './s/SearchCollectionsContext';
 
 export default function GlobalNav() {
   const selectedLayoutSegments = useSelectedLayoutSegments();
   const pathname = usePathname();
 
   const { topics, loading } = useGlobal();
+  const { total: totalPhotos, setQuery: setPhotosQuery } = useSearchPhotos();
+  const { total: totalCollections, setQuery: setCollectionsQuery } =
+    useSearchCollections();
 
-  const isSearchPage: boolean =
-    selectedLayoutSegments.length > 0 && selectedLayoutSegments[0] === 's';
+  const [searchQuery, setSearchQuery] = useState<string>();
 
-  let searchQuery: string = '';
-  if (isSearchPage) {
-    // url format: /s/photos/[query]
-    searchQuery = selectedLayoutSegments[2];
-  }
+  const isSearchPage: boolean = useMemo<boolean>(
+    () =>
+      selectedLayoutSegments.length > 0 && selectedLayoutSegments[0] === 's',
+    [selectedLayoutSegments],
+  );
+
+  useEffect(() => {
+    if (isSearchPage && selectedLayoutSegments) {
+      // url format: /s/photos/[query]
+      const q = selectedLayoutSegments[2];
+
+      setSearchQuery(q);
+      setPhotosQuery(q.replaceAll('-', ' '));
+      setCollectionsQuery(q.replaceAll('-', ' '));
+    }
+  }, [isSearchPage, selectedLayoutSegments]);
 
   return (
     <div
@@ -46,23 +62,43 @@ export default function GlobalNav() {
             />
           </div>
 
-          {isSearchPage ? (
+          {isSearchPage && searchQuery ? (
             <div className="flex h-12 w-full flex-row items-center space-x-8 pl-4">
               <TabNavItem
                 key="__photos__"
                 href={`/s/photos/${searchQuery}`}
                 itemId="__photos__"
                 isActive={selectedLayoutSegments[1] === 'photos'}
+                className={totalPhotos < 0 ? '' : 'space-x-2'}
               >
-                Photos
+                <span>Photos</span>
+                <span>
+                  {totalPhotos < 0
+                    ? ''
+                    : totalPhotos > 1000000
+                    ? `${Math.floor(totalPhotos / 1000000)}m`
+                    : totalPhotos > 1000
+                    ? `${Math.floor(totalPhotos / 1000)}k`
+                    : totalPhotos}
+                </span>
               </TabNavItem>
               <TabNavItem
                 key="__collections__"
                 href={`/s/collections/${searchQuery}`}
                 itemId="__collections__"
                 isActive={selectedLayoutSegments[1] === 'collections'}
+                className={totalCollections < 0 ? '' : 'space-x-2'}
               >
-                Collections
+                <span>Collections</span>
+                <span>
+                  {totalCollections < 0
+                    ? ''
+                    : totalCollections > 1000000
+                    ? `${Math.floor(totalCollections / 1000000)}m`
+                    : totalCollections > 1000
+                    ? `${Math.floor(totalCollections / 1000)}k`
+                    : totalCollections}
+                </span>
               </TabNavItem>
               <TabNavItem
                 key="__uesrs__"
