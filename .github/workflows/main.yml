@@ -21,8 +21,10 @@ jobs:
           heroku_app_name: unsplash-nextjs #Must be unique in Heroku
           heroku_email: tronx.dev@gmail.com
           usedocker: false
+          justlogin: true
         env:
           HD_NODE_ENV: ${{secrets.NODE_ENV}}
           HD_VERSION: ${{secrets.VERSION}}
           HD_HOST: ${{secrets.HOST}}
           HD_UNSPLASH_ACCESS_KEY: ${{secrets.UNSPLASH_ACCESS_KEY}}
+      - run: heroku container:login
