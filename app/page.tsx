@@ -15,6 +15,7 @@ function Page() {
     useState<boolean>(false);
 
   const {
+    bannerPhoto,
     recentQueries,
     addRecentQuery,
     recentCollections,
@@ -22,7 +23,7 @@ function Page() {
     recentTopics,
     addRecentTopic,
   } = useGlobal();
-  const { popularPhoto, photos, hasMore, loadMore } = useHome();
+  const { photos, hasMore, loadMore } = useHome();
 
   const handleQueryChange = useCallback((q: string) => {}, []);
 
@@ -42,16 +43,16 @@ function Page() {
   return (
     <div className="w-full space-y-4">
       <div className="relative h-128 w-full bg-zinc-200">
-        {popularPhoto && (
+        {bannerPhoto && (
           <Image
-            alt={popularPhoto.id || 'home'}
-            src={popularPhoto.urls.full}
+            alt={bannerPhoto.id || 'home'}
+            src={bannerPhoto.urls.full}
             fill={true}
             quality={100}
             className="!z-0 object-cover object-center"
             sizes="1024px"
             placeholder="blur"
-            blurDataURL={popularPhoto.urls.small}
+            blurDataURL={bannerPhoto.urls.small}
           />
         )}
         <div className="absolute !z-10 flex h-full w-full flex-col justify-center space-y-8 p-32">

@@ -13,7 +13,6 @@ import * as Unsplash from '@/types/unsplash';
 
 const HomeContext = createContext<
   | {
-      popularPhoto?: Unsplash.Photo.Basic;
       photos: Unsplash.Photo.Basic[];
       loadMore: (p: number) => void;
       loading: boolean;
@@ -26,7 +25,6 @@ const MAX_TOTAL: number = 100000;
 const PER_PAGE: number = 20;
 
 export function HomeProvider({ children }: { children: React.ReactNode }) {
-  const [popularPhoto, setPopularPhoto] = useState<Unsplash.Photo.Basic>();
   const [photos, setPhotos] = useState<Unsplash.Photo.Basic[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
@@ -34,8 +32,6 @@ export function HomeProvider({ children }: { children: React.ReactNode }) {
 
   const loadMore = useCallback(async (p: number) => {
     setLoading(true);
-
-    console.log(process.env.HOST);
 
     const res = await fetch(
       `${process.env.HOST}/api/search/photos?page=${p}&perPage=${PER_PAGE}&orderBy=${Unsplash.Search.SearchPhotoOrderBy.LATEST}`,
@@ -53,28 +49,6 @@ export function HomeProvider({ children }: { children: React.ReactNode }) {
     setLoading(false);
   }, []);
 
-  useEffect(() => {
-    const fetchTopics = async () => {
-      setLoading(true);
-
-      const res = await fetch(
-        `${process.env.HOST}/api/search/photos?page=1&perPage=${PER_PAGE}&orderBy=${Unsplash.Search.ListPhotosOrderBy.POPULAR}`,
-      );
-
-      if (res.ok) {
-        const data = await res.json();
-        // pick up one random out of top 20 popular photos
-        setPopularPhoto(
-          data.results[Math.round(Math.random() * data.results.length)],
-        );
-      }
-
-      setLoading(false);
-    };
-
-    fetchTopics();
-  }, []);
-
   const hasMore: boolean = useMemo(
     () => !loading && page < (!total ? 0 : Math.ceil(total / PER_PAGE)),
     [page, total, loading],
@@ -83,7 +57,6 @@ export function HomeProvider({ children }: { children: React.ReactNode }) {
   return (
     <HomeContext.Provider
       value={{
-        popularPhoto,
         photos,
         loading,
         loadMore,
