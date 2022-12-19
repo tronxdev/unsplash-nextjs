@@ -2,7 +2,7 @@
 
 import React, { useCallback, useEffect, useRef } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
-import SearchSvg from './SearchSvg';
+import SVG from './svg';
 
 interface ISearchBar {
   className?: string;
@@ -48,7 +48,9 @@ export default function SearchBar({
     <div
       className={`${className} flex w-full items-center space-x-1 rounded-md border border-zinc-50 p-2 outline-none`}
     >
-      <SearchSvg />
+      <div className="h-5 w-5 stroke-zinc-500 text-zinc-500">
+        {SVG.OutlineSearch}
+      </div>
       <input
         ref={inputRef}
         type={'text'}

@@ -28,7 +28,7 @@ export default function Photo({ photo, favorite, onFavoriteChange }: IPhoto) {
         <div className="absolute left-0 top-0 z-10 h-full w-full bg-zinc-700 opacity-80">
           <div className="absolute top-0 left-0 right-0 flex w-full flex-row items-center justify-end p-4">
             <SvgButton
-              kind="STAR_OUTLINE"
+              kind="OutlineStar"
               className="h-8 w-8 text-zinc-100"
               onClick={handleDownloadClick}
             />
@@ -45,7 +45,7 @@ export default function Photo({ photo, favorite, onFavoriteChange }: IPhoto) {
               />
             </div>
             <SvgButton
-              kind="DOWNLOAD"
+              kind="OutlineDownload"
               className="h-8 w-8 text-zinc-100"
               onClick={handleDownloadClick}
             />
