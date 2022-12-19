@@ -14,13 +14,13 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: '16'
+          node-version: '18'
       - uses: akhileshns/heroku-deploy@v3.12.12 # This is the action
         with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
           heroku_app_name: unsplash-nextjs #Must be unique in Heroku
           heroku_email: tronx.dev@gmail.com
-          usedocker: true
+          usedocker: false
         env:
           HD_NODE_ENV: ${{secrets.NODE_ENV}}
           HD_VERSION: ${{secrets.VERSION}}
