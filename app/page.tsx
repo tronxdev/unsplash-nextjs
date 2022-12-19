@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import InfiniteScroll from 'react-infinite-scroller';
 import Masonry from 'react-responsive-masonry';
@@ -11,6 +12,8 @@ import { useGlobal } from './GlobalContext';
 import { useHome, HomeProvider } from './HomeContext';
 
 function Page() {
+  const router = useRouter();
+
   const [isSearchPopoverOpen, setIsSearchPopoverOpen] =
     useState<boolean>(false);
 
@@ -30,6 +33,8 @@ function Page() {
   const handleQuerySubmit = useCallback((q: string) => {
     addRecentQuery(q);
     setIsSearchPopoverOpen(false);
+
+    router.push(`/s/photos/${q.replaceAll(' ', '-')}`);
   }, []);
 
   const handleSearchBarFocus = useCallback(() => {
