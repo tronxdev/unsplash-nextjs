@@ -36,7 +36,7 @@ export default function GlobalNav() {
               className="!rounded-full bg-zinc-200"
             />
           </div>
-          <div className="flex h-12 w-full flex-row items-center space-x-2 pl-4">
+          <div className="flex h-12 w-full flex-row items-center space-x-4 pl-4">
             <TabNavItem
               key="__home__"
               href="/"
