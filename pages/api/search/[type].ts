@@ -1,4 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
+import NextCors from 'nextjs-cors';
 import { StatusCodes, getReasonPhrase } from 'http-status-codes';
 import * as Unsplash from '@/types/unsplash';
 import unsplashClient from '@/lib/unsplash';
@@ -12,6 +13,13 @@ export default async function handler(
   >,
 ) {
   try {
+    // run cors middleware
+    await NextCors(req, res, {
+      methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
+      origin: '*',
+      optionsSuccessStatus: 200,
+    });
+
     // await connect();
     const { type } = req.query;
 

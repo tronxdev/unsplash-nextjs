@@ -1,4 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
+import NextCors from 'nextjs-cors';
 import { StatusCodes, getReasonPhrase } from 'http-status-codes';
 import unsplash from '@/lib/unsplash';
 import * as Unsplash from '@/types/unsplash';
@@ -9,6 +10,13 @@ export default async function handler(
   res: NextApiResponse<Unsplash.Search.Photos | Api.Error | undefined>,
 ) {
   try {
+    // run cors middleware
+    await NextCors(req, res, {
+      methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
+      origin: '*',
+      optionsSuccessStatus: 200,
+    });
+
     if (req.method === 'GET') {
       const username: string = req.query.username as string;
       const page: number = parseInt(req.query.page as string, 10) || 1;
