@@ -20,6 +20,9 @@ const nextConfig = {
     ],
   },
   output: 'standalone',
+  env: {
+    HOST: process.env.HOST,
+  },
 };
 
 module.exports = nextConfig;

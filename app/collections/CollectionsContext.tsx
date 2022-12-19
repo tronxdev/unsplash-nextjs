@@ -58,7 +58,7 @@ export function CollectionsProvider({
     setLoading(true);
 
     const res = await fetch(
-      `http://localhost:3000/api/search/collections?query=${query}&page=${page}&perPage=${perPage}`,
+      `${process.env.HOST}/api/search/collections?query=${query}&page=${page}&perPage=${perPage}`,
     );
 
     const data = await res.json();
@@ -77,7 +77,7 @@ export function CollectionsProvider({
   const fetchCollection = async (id: string) => {
     setLoading(true);
 
-    const res = await fetch(`http://localhost:3000/api/collection/${id}`);
+    const res = await fetch(`${process.env.HOST}/api/collection/${id}`);
 
     const data = await res.json();
 

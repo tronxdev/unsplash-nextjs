@@ -58,7 +58,7 @@ export function GlobalProvider({ children }: { children: React.ReactNode }) {
       setLoading(true);
 
       const res = await fetch(
-        `http://localhost:3000/api/search/topics?page=1&perPage=20`,
+        `${process.env.HOST}/api/search/topics?page=1&perPage=20`,
       );
 
       if (res.ok) {

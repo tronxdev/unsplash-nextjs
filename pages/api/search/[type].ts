@@ -44,8 +44,6 @@ export default async function handler(
         const orderBy: Unsplash.Search.ListPhotosOrderBy | undefined = req.query
           .orderBy as Unsplash.Search.ListPhotosOrderBy | undefined;
 
-        console.log(page, perPage, orderBy);
-
         const { response } = await unsplashClient.photos.list({
           page,
           perPage,
@@ -88,7 +86,6 @@ export default async function handler(
       res.status(StatusCodes.OK).json(response);
     }
   } catch (e) {
-    console.log(e);
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .send({ error: getReasonPhrase(StatusCodes.INTERNAL_SERVER_ERROR) });

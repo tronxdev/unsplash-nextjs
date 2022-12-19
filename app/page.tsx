@@ -39,8 +39,6 @@ function Page() {
     setIsSearchPopoverOpen(false);
   }, [setIsSearchPopoverOpen]);
 
-  console.log(recentQueries);
-
   return (
     <div className="w-full space-y-4">
       <div className="relative h-128 w-full bg-zinc-200">

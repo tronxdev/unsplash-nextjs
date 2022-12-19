@@ -47,7 +47,7 @@ export function PhotosProvider({ children }: { children: React.ReactNode }) {
     setLoading(true);
 
     const res = await fetch(
-      `http://localhost:3000/api/search/photos?query=${query}&page=${p}&perPage=${perPage}`,
+      `${process.env.HOST}/api/search/photos?query=${query}&page=${p}&perPage=${perPage}`,
     );
 
     if (res.ok) {

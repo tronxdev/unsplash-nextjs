@@ -35,8 +35,10 @@ export function HomeProvider({ children }: { children: React.ReactNode }) {
   const loadMore = useCallback(async (p: number) => {
     setLoading(true);
 
+    console.log(process.env.HOST);
+
     const res = await fetch(
-      `http://localhost:3000/api/search/photos?page=${p}&perPage=${PER_PAGE}&orderBy=${Unsplash.Search.SearchPhotoOrderBy.LATEST}`,
+      `${process.env.HOST}/api/search/photos?page=${p}&perPage=${PER_PAGE}&orderBy=${Unsplash.Search.SearchPhotoOrderBy.LATEST}`,
     );
 
     if (res.ok) {
@@ -56,7 +58,7 @@ export function HomeProvider({ children }: { children: React.ReactNode }) {
       setLoading(true);
 
       const res = await fetch(
-        `http://localhost:3000/api/search/photos?page=1&perPage=${PER_PAGE}&orderBy=${Unsplash.Search.ListPhotosOrderBy.POPULAR}`,
+        `${process.env.HOST}/api/search/photos?page=1&perPage=${PER_PAGE}&orderBy=${Unsplash.Search.ListPhotosOrderBy.POPULAR}`,
       );
 
       if (res.ok) {

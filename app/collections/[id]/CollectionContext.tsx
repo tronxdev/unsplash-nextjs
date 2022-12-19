@@ -44,9 +44,11 @@ export function CollectionProvider({
     const getCollection = async () => {
       setLoading(true);
 
-      const res1 = await fetch(`http://localhost:3000/api/collection/${id}`);
+      const res1 = await fetch(`${process.env.HOST}/api/collection/${id}`);
       const res2 = await fetch(
-        `http://localhost:3000/api/collection/${id}/photos?page=${1}&perPage=${perPage}`,
+        `${
+          process.env.HOST
+        }/api/collection/${id}/photos?page=${1}&perPage=${perPage}`,
       );
 
       if (res1.ok && res2.ok) {
@@ -76,7 +78,7 @@ export function CollectionProvider({
         setLoading(true);
 
         const res = await fetch(
-          `http://localhost:3000/api/collection/${id}/photos?page=${p}&perPage=${perPage}`,
+          `${process.env.HOST}/api/collection/${id}/photos?page=${p}&perPage=${perPage}`,
         );
 
         if (res.ok) {

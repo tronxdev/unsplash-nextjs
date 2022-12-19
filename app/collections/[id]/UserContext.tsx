@@ -25,7 +25,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       setLoading(true);
 
       const res = await fetch(
-        `http://localhost:3000/api/user/${username}/photos?page=1&perPage=3&orderBy=popular&orientation=portrait`,
+        `${process.env.HOST}/api/user/${username}/photos?page=1&perPage=3&orderBy=popular&orientation=portrait`,
       );
 
       if (res.ok) {
