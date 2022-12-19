@@ -22,7 +22,7 @@ export default function RootLayout({
               <GlobalNav />
             </div>
             <div className="h-full space-y-6">
-              <div className="p-8">{children}</div>
+              <div className="w-full">{children}</div>
             </div>
 
             <div className="mt-28 flex items-center justify-center">
