@@ -119,7 +119,7 @@ function Page() {
         threshold={250}
         className="px-4"
       >
-        <Masonry gutter="1rem">
+        <Masonry gutter="2rem">
           {photos.map((photo) => (
             <Photo
               key={photo.id}

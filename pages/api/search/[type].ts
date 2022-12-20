@@ -57,7 +57,7 @@ export default async function handler(
     if (req.method === 'GET' && type === 'collections') {
       const query: string = req.query.query as string;
       const page: number = parseInt(req.query.page as string, 10) || 1;
-      const perPage: number = parseInt(req.query.perPage as string, 10) || 10;
+      const perPage: number = parseInt(req.query.perPage as string, 10) || 20;
 
       if (query) {
         const { response } = await unsplashClient.search.getCollections({
@@ -79,7 +79,7 @@ export default async function handler(
 
     if (req.method === 'GET' && type === 'topics') {
       const page: number = parseInt(req.query.page as string, 10) || 1;
-      const perPage: number = parseInt(req.query.perPage as string, 10) || 10;
+      const perPage: number = parseInt(req.query.perPage as string, 10) || 20;
 
       const { response } = await unsplashClient.topics.list({ page, perPage });
 

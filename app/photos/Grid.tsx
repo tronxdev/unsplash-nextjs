@@ -16,7 +16,7 @@ export default function Grid() {
           useWindow={false}
           threshold={150}
         >
-          <Masonry gutter="1rem">
+          <Masonry gutter="2rem">
             {photos.map((photo) => (
               <Photo
                 key={photo.id}

@@ -1,4 +1,5 @@
 import React from 'react';
+import { TopicProvider } from './TopicContext';
 
 interface ILayout {
   children: React.ReactNode;
@@ -6,9 +7,8 @@ interface ILayout {
 
 export default function Layout({ children }: ILayout) {
   return (
-    <div>
-      <div>topic layout</div>
-      {children}
-    </div>
+    <TopicProvider>
+      <div className="w-full">{children}</div>
+    </TopicProvider>
   );
 }

@@ -20,7 +20,7 @@ export default function Page({ params }: { params: { query: string } }) {
         useWindow={true}
         threshold={250}
       >
-        <Masonry gutter="1rem">
+        <Masonry gutter="2rem">
           {photos.map((photo) => (
             <Photo
               key={photo.id}
