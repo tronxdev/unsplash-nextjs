@@ -7,6 +7,7 @@ import {
   usePathname,
   useSearchParams,
 } from 'next/navigation';
+import Link from 'next/link';
 import SearchBar from '@/ui/SearchBar';
 import TabNavItem from '@/ui/TabNavItem';
 import HorizonalScroller from '@/ui/HorizonalScroller';
@@ -54,11 +55,19 @@ export default function GlobalNav() {
         <Loading kind="small" />
       ) : (
         <>
-          <div className="w-full p-4">
+          <div className="flex w-full flex-row items-center space-x-4 p-4">
+            <Link href="/">
+              <div className="text-base font-bold text-zinc-900">
+                My Unsplashee
+              </div>
+              <div className="text-xs font-light text-zinc-500">
+                Supported by tronx.dev
+              </div>
+            </Link>
             <SearchBar
               defaultQuery=""
               onQueryChange={() => {}}
-              className="!rounded-full bg-zinc-200"
+              className="flex-1 !rounded-full bg-zinc-200"
             />
           </div>
 
