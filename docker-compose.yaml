@@ -1,22 +1,21 @@
 services:
-  app-prod:
-    build:
-      context: .
-      args:
-        - NODE_ENV=production
-    ports:
-      - '3000:3000'
-
   app-dev:
     build:
       context: .
-      target: deps
-    command: npm run dev
+    # command: npm run dev
     ports:
-      - '3001:3000'
-    environment:
-      - NODE_ENV=development
+      - '3000:3000'
+    env_file: .env.local
+    # environment:
+    #   - NODE_ENV=development
     volumes:
       - .:/app
       - /app/node_modules
       - /app/.next
+# app-prod:
+#   build:
+#     context: .
+#     args:
+#       - NODE_ENV=production
+#   ports:
+#     - '0.0.0.0:8000:3000'
