@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import InfiniteScroll from 'react-infinite-scroller';
 import Masonry from 'react-responsive-masonry';
+import * as indexedDB from '@/lib/indexedDB';
 import Photo from '@/ui/PhotoItem';
 import SearchBar from '@/ui/SearchBar';
 import SearchPopover from '@/ui/SearchPopover';
@@ -25,6 +26,8 @@ function Page() {
     addRecentCollection,
     recentTopics,
     addRecentTopic,
+    changePhotoLike,
+    photoLikes,
   } = useGlobal();
   const { photos, hasMore, loadMore } = useHome();
 
@@ -44,6 +47,17 @@ function Page() {
   const handleSearchPopoverOutsideClick = useCallback(() => {
     setIsSearchPopoverOpen(false);
   }, [setIsSearchPopoverOpen]);
+
+  // const handlePhotoLikeChange = useCallback(
+  //   async (id: string, favorite: boolean) => {
+  //     if (favorite) {
+  //       await indexedDB.addPhotoLike(id);
+  //     } else {
+  //       await indexedDB.deletePhotoLike(id);
+  //     }
+  //   },
+  //   [],
+  // );
 
   return (
     <div className="w-full space-y-8">
@@ -124,8 +138,8 @@ function Page() {
             <Photo
               key={photo.id}
               photo={photo}
-              favorite={false}
-              onFavoriteChange={() => {}}
+              favorite={!!photoLikes.find((p) => p === photo.id)}
+              onFavoriteChange={changePhotoLike}
             />
           ))}
         </Masonry>

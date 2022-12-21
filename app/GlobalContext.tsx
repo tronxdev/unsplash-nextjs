@@ -8,6 +8,7 @@ import React, {
   useState,
 } from 'react';
 import _ from 'lodash';
+import * as indexedDB from '@/lib/indexedDB';
 import * as Unsplash from '@/types/unsplash';
 
 const PER_PAGE: number = 20;
@@ -22,6 +23,8 @@ const GlobalContext = createContext<
       addRecentCollection: (c: Unsplash.Collection.Basic) => void;
       recentTopics: Unsplash.Topic.Basic[];
       addRecentTopic: (t: Unsplash.Topic.Basic) => void;
+      photoLikes: string[];
+      changePhotoLike: (id: string, favorite: boolean) => Promise<void>;
       loading: boolean;
     }
   | undefined
@@ -35,9 +38,11 @@ export function GlobalProvider({ children }: { children: React.ReactNode }) {
     Unsplash.Collection.Basic[]
   >([]);
   const [recentTopics, setRecentTopics] = useState<Unsplash.Topic.Basic[]>([]);
+  const [photoLikes, setPhotoLikes] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
-  const addRecentQuery = useCallback((q: string) => {
+  const addRecentQuery = useCallback(async (q: string) => {
+    await indexedDB.addRecentQuery(q);
     setRecentQueries((prev) => _.uniq([q, ...prev]).slice(0, 5));
   }, []);
 
@@ -57,9 +62,34 @@ export function GlobalProvider({ children }: { children: React.ReactNode }) {
     [recentTopics],
   );
 
+  /**
+   * @name changePhotoLike
+   * @param id photo ID
+   * @param favorite favorite/non-favorite to be updated
+   * @returns Promise object
+   * @description update the photo likes by photo ID in IndexedDB
+   */
+  const changePhotoLike = useCallback(async (id: string, favorite: boolean) => {
+    if (favorite) {
+      await indexedDB.addPhotoLike(id);
+      setPhotoLikes((prev) => [...prev, id]);
+    } else {
+      await indexedDB.deletePhotoLike(id);
+      setPhotoLikes((prev) => prev.filter((p) => p !== id));
+    }
+  }, []);
+
   useEffect(() => {
     const fetchInitialData = async () => {
       setLoading(true);
+
+      // read recent queries from IndexedDB
+      const cachedQueries = await indexedDB.getRecentQueries(5, true);
+      setRecentQueries(cachedQueries.map((q) => q.query as string));
+
+      // read photo likes from IndexedDB
+      const cachedPhotoLikes = await indexedDB.getPhotoLikes();
+      setPhotoLikes(cachedPhotoLikes.map((p) => p.photoId as string));
 
       const res1 = await fetch(
         `${process.env.HOST}/api/search/photos?page=1&perPage=${PER_PAGE}&orderBy=${Unsplash.Search.ListPhotosOrderBy.POPULAR}`,
@@ -101,6 +131,8 @@ export function GlobalProvider({ children }: { children: React.ReactNode }) {
         addRecentCollection,
         recentTopics,
         addRecentTopic,
+        photoLikes,
+        changePhotoLike,
         loading,
       }}
     >

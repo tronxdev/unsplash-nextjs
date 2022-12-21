@@ -1,5 +1,6 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import Image from 'next/image';
+import { useDebouncedCallback } from 'use-debounce';
 import * as Unsplash from '@/types/unsplash';
 import download from '@/lib/download';
 import SvgButton from '@/ui/SvgButton';
@@ -7,15 +8,22 @@ import SvgButton from '@/ui/SvgButton';
 interface IPhoto {
   photo: Unsplash.Photo.Basic;
   favorite?: boolean;
-  onFavoriteChange: () => void;
+  onFavoriteChange: (id: string, isFavorite: boolean) => void;
 }
 
 export default function Photo({ photo, favorite, onFavoriteChange }: IPhoto) {
   const [isHovered, setIsHovered] = useState<boolean>(false);
+  const [isFavorite, setIsFavorite] = useState<boolean>(favorite || false);
+
+  const debounced = useDebouncedCallback(onFavoriteChange, 1000);
 
   const handleDownloadClick = useCallback(() => {
     download(photo.urls.raw, 'image.jpg');
   }, [photo.urls.raw]);
+
+  useEffect(() => {
+    if (favorite !== isFavorite) debounced(photo.id, isFavorite);
+  }, [favorite, isFavorite, debounced]);
 
   return (
     <div
@@ -28,9 +36,9 @@ export default function Photo({ photo, favorite, onFavoriteChange }: IPhoto) {
         <div className="absolute left-0 top-0 z-10 h-full w-full bg-zinc-700 opacity-80">
           <div className="absolute top-0 left-0 right-0 flex w-full flex-row items-center justify-end p-4">
             <SvgButton
-              kind="OutlineStar"
+              kind={isFavorite ? 'SolidStar' : 'OutlineStar'}
               className="h-8 w-8 text-zinc-100"
-              onClick={handleDownloadClick}
+              onClick={() => setIsFavorite((prev) => !prev)}
             />
           </div>
           <div className="absolute bottom-0 left-0 right-0 flex w-full flex-row items-center justify-between p-4">
