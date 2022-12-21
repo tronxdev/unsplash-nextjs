@@ -1,14 +1,15 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import clsx from 'clsx';
 import {
   useSelectedLayoutSegments,
   usePathname,
-  useSearchParams,
+  useRouter,
 } from 'next/navigation';
 import Link from 'next/link';
 import SearchBar from '@/ui/SearchBar';
+import SearchPopover from '@/ui/SearchPopover';
 import TabNavItem from '@/ui/TabNavItem';
 import HorizonalScroller from '@/ui/HorizonalScroller';
 import Loading from '@/ui/Loading';
@@ -17,21 +18,48 @@ import { useSearchPhotos } from './s/SearchPhotosContext';
 import { useSearchCollections } from './s/SearchCollectionsContext';
 
 export default function GlobalNav() {
+  const router = useRouter();
   const selectedLayoutSegments = useSelectedLayoutSegments();
   const pathname = usePathname();
 
-  const { topics, loading } = useGlobal();
+  const {
+    topics,
+    loading,
+    recentQueries,
+    addRecentQuery,
+    recentCollections,
+    recentTopics,
+  } = useGlobal();
   const { total: totalPhotos, setQuery: setPhotosQuery } = useSearchPhotos();
   const { total: totalCollections, setQuery: setCollectionsQuery } =
     useSearchCollections();
 
   const [searchQuery, setSearchQuery] = useState<string>();
+  const [isSearchPopoverOpen, setIsSearchPopoverOpen] =
+    useState<boolean>(false);
 
   const isSearchPage: boolean = useMemo<boolean>(
     () =>
       selectedLayoutSegments.length > 0 && selectedLayoutSegments[0] === 's',
     [selectedLayoutSegments],
   );
+
+  const handleQueryChange = useCallback((q: string) => {}, []);
+
+  const handleQuerySubmit = useCallback((q: string) => {
+    addRecentQuery(q);
+    setIsSearchPopoverOpen(false);
+
+    router.push(`/s/photos/${q.replaceAll(' ', '-')}`);
+  }, []);
+
+  const handleSearchBarFocus = useCallback(() => {
+    setIsSearchPopoverOpen(true);
+  }, [setIsSearchPopoverOpen]);
+
+  const handleSearchPopoverOutsideClick = useCallback(() => {
+    setIsSearchPopoverOpen(false);
+  }, [setIsSearchPopoverOpen]);
 
   useEffect(() => {
     if (isSearchPage && selectedLayoutSegments) {
@@ -64,11 +92,56 @@ export default function GlobalNav() {
                 Supported by tronx.dev
               </div>
             </Link>
-            <SearchBar
+            <div className="flex-1">
+              <SearchPopover
+                isOpen={isSearchPopoverOpen}
+                positions={['bottom']}
+                data={[
+                  {
+                    id: 'search',
+                    title: 'Recent queries',
+                    items: recentQueries.map((q) => ({
+                      id: q.replaceAll(' ', '_'),
+                      title: q,
+                      href: `/s/photos/${q.replaceAll(' ', '%20')}`,
+                    })),
+                  },
+                  {
+                    id: 'collections',
+                    title: 'Recent collections',
+                    items: recentCollections.map((c) => ({
+                      id: c.id,
+                      title: c.title,
+                      href: `/s/collections/${c.id}`,
+                    })),
+                  },
+                  {
+                    id: 'topics',
+                    title: 'Recent topics',
+                    items: recentTopics.map((t) => ({
+                      id: t.id,
+                      title: t.title,
+                      href: `/s/topics/${t.id}`,
+                    })),
+                  },
+                ]}
+                onClickOutside={handleSearchPopoverOutsideClick}
+                className={'!right-64'}
+                // className="flex-1 !rounded-full bg-zinc-200"
+              >
+                <SearchBar
+                  className="w-full !rounded-full bg-zinc-200"
+                  onQueryChange={handleQueryChange}
+                  onQuerySubmit={handleQuerySubmit}
+                  onFocus={handleSearchBarFocus}
+                />
+              </SearchPopover>
+            </div>
+            {/* <SearchBar
               defaultQuery=""
               onQueryChange={() => {}}
               className="flex-1 !rounded-full bg-zinc-200"
-            />
+            /> */}
           </div>
 
           {isSearchPage && searchQuery ? (
