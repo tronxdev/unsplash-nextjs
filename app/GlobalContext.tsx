@@ -35,7 +35,7 @@ export function GlobalProvider({ children }: { children: React.ReactNode }) {
     Unsplash.Collection.Basic[]
   >([]);
   const [recentTopics, setRecentTopics] = useState<Unsplash.Topic.Basic[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const addRecentQuery = useCallback((q: string) => {
     setRecentQueries((prev) => _.uniq([q, ...prev]).slice(0, 5));
