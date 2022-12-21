@@ -13,6 +13,7 @@ import SearchPopover from '@/ui/SearchPopover';
 import TabNavItem from '@/ui/TabNavItem';
 import HorizonalScroller from '@/ui/HorizonalScroller';
 import Loading from '@/ui/Loading';
+import SVG from '@/ui/svg';
 import { useGlobal } from './GlobalContext';
 import { useSearchPhotos } from './s/SearchPhotosContext';
 import { useSearchCollections } from './s/SearchCollectionsContext';
@@ -151,10 +152,19 @@ export default function GlobalNav() {
                 href={`/s/photos/${searchQuery}`}
                 itemId="__photos__"
                 isActive={selectedLayoutSegments[1] === 'photos'}
-                className={totalPhotos < 0 ? '' : 'space-x-2'}
+                className={`flex flex-row items-center ${
+                  totalPhotos < 0 ? '' : 'space-x-2'
+                }`}
               >
-                <span>Photos</span>
-                <span>
+                <div className="flex flex-row items-center space-x-1">
+                  <div className="h-5 w-5">
+                    {selectedLayoutSegments[1] === 'photos'
+                      ? SVG.SolidPhoto
+                      : SVG.OutlinePhoto}
+                  </div>
+                  <div>Photos</div>
+                </div>
+                <div>
                   {totalPhotos < 0
                     ? ''
                     : totalPhotos > 1000000
@@ -162,17 +172,26 @@ export default function GlobalNav() {
                     : totalPhotos > 1000
                     ? `${Math.floor(totalPhotos / 1000)}k`
                     : totalPhotos}
-                </span>
+                </div>
               </TabNavItem>
               <TabNavItem
                 key="__collections__"
                 href={`/s/collections/${searchQuery}`}
                 itemId="__collections__"
                 isActive={selectedLayoutSegments[1] === 'collections'}
-                className={totalCollections < 0 ? '' : 'space-x-2'}
+                className={`flex flex-row items-center ${
+                  totalCollections < 0 ? '' : 'space-x-2'
+                }`}
               >
-                <span>Collections</span>
-                <span>
+                <div className="flex flex-row items-center space-x-1">
+                  <div className="h-5 w-5">
+                    {selectedLayoutSegments[1] === 'collections'
+                      ? SVG.SolidStack
+                      : SVG.OutlineStack}
+                  </div>
+                  <div>Collections</div>
+                </div>
+                <div>
                   {totalCollections < 0
                     ? ''
                     : totalCollections > 1000000
@@ -180,7 +199,7 @@ export default function GlobalNav() {
                     : totalCollections > 1000
                     ? `${Math.floor(totalCollections / 1000)}k`
                     : totalCollections}
-                </span>
+                </div>
               </TabNavItem>
               <TabNavItem
                 key="__uesrs__"
