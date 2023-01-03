@@ -6,7 +6,9 @@
     "build": "tailwindcss -m -i styles/globals.css -o styles/dist.css && next build --debug",
     "start": "next start",
     "lint": "next lint",
-    "format": "prettier --write \"**/*.{js,ts,tsx,md}\""
+    "format": "prettier --write \"**/*.{js,ts,tsx,md}\"",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
   },
   "prettier": {
     "arrowParens": "always",
@@ -40,6 +42,15 @@
     "use-debounce": "9.0.2"
   },
   "devDependencies": {
+    "@babel/core": "7.20.7",
+    "@storybook/addon-actions": "6.5.15",
+    "@storybook/addon-essentials": "6.5.15",
+    "@storybook/addon-interactions": "6.5.15",
+    "@storybook/addon-links": "6.5.15",
+    "@storybook/builder-webpack5": "6.5.15",
+    "@storybook/manager-webpack5": "6.5.15",
+    "@storybook/react": "6.5.15",
+    "@storybook/testing-library": "0.0.13",
     "@types/file-saver": "2.0.5",
     "@types/lodash": "4.14.191",
     "@types/node": "18.0.3",
@@ -50,6 +61,7 @@
     "@types/react-responsive-masonry": "2.1.0",
     "@types/sequelize": "4.28.14",
     "autoprefixer": "10.4.13",
+    "babel-loader": "8.3.0",
     "eslint": "8.19.0",
     "eslint-config-next": "latest",
     "postcss": "8.4.19",
