@@ -2,7 +2,7 @@
 
 import React, { useCallback, useEffect, useRef } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
-import SVG from './svg';
+import SVG from '../svg';
 
 interface ISearchBar {
   className?: string;
