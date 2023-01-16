@@ -17,6 +17,7 @@
     "singleQuote": true
   },
   "dependencies": {
+    "@prisma/client": "4.8.1",
     "clsx": "1.2.1",
     "concurrently": "7.5.0",
     "dexie": "3.2.2",
@@ -69,6 +70,7 @@
     "postcss": "8.4.19",
     "prettier": "^2.7.1",
     "prettier-plugin-tailwindcss": "^0.1.12",
+    "prisma": "4.8.1",
     "react-docgen-typescript-plugin": "1.0.2",
     "sass": "1.57.1",
     "storybook-addon-next": "1.7.1",
