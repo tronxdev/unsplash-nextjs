@@ -45,6 +45,8 @@ export default function GlobalNav() {
   const selectedLayoutSegments = useSelectedLayoutSegments();
   const pathname = usePathname();
 
+  console.log(pathname);
+
   const isActive: (_pathname: string) => boolean = (_pathname) =>
     pathname === _pathname;
 
@@ -109,9 +111,15 @@ export default function GlobalNav() {
     }
   }, [isSearchPage, selectedLayoutSegments]);
 
+  useEffect(() => {
+    if (!session) {
+      router.push('/dashboard');
+    }
+  }, [session, router]);
+
   return (
     <div
-      className={clsx('flex min-h-[118px] flex-col', {
+      className={clsx(`flex min-h-[${session ? `118px` : `72px`}] flex-col`, {
         'items-center justify-center': loading,
         'items-start justify-start': !loading,
       })}
@@ -130,49 +138,53 @@ export default function GlobalNav() {
               </div>
             </Link>
             <div className="flex-1">
-              <SearchPopover
-                isOpen={isSearchPopoverOpen}
-                positions={['bottom']}
-                data={[
-                  {
-                    id: 'search',
-                    title: 'Recent queries',
-                    items: recentQueries.map((q) => ({
-                      id: q.replaceAll(' ', '_'),
-                      title: q,
-                      href: `/s/photos/${q.replaceAll(' ', '%20')}`,
-                    })),
-                  },
-                  {
-                    id: 'collections',
-                    title: 'Recent collections',
-                    items: recentCollections.map((c) => ({
-                      id: c.id,
-                      title: c.title,
-                      href: `/s/collections/${c.id}`,
-                    })),
-                  },
-                  {
-                    id: 'topics',
-                    title: 'Recent topics',
-                    items: recentTopics.map((t) => ({
-                      id: t.id,
-                      title: t.title,
-                      href: `/s/topics/${t.id}`,
-                    })),
-                  },
-                ]}
-                onClickOutside={handleSearchPopoverOutsideClick}
-                className={'!right-64'}
-                // className="flex-1 !rounded-full bg-zinc-200"
-              >
-                <SearchBar
-                  className="w-full !rounded-full bg-zinc-200"
-                  onQueryChange={handleQueryChange}
-                  onQuerySubmit={handleQuerySubmit}
-                  onFocus={handleSearchBarFocus}
-                />
-              </SearchPopover>
+              {session ? (
+                <SearchPopover
+                  isOpen={isSearchPopoverOpen}
+                  positions={['bottom']}
+                  data={[
+                    {
+                      id: 'search',
+                      title: 'Recent queries',
+                      items: recentQueries.map((q) => ({
+                        id: q.replaceAll(' ', '_'),
+                        title: q,
+                        href: `/s/photos/${q.replaceAll(' ', '%20')}`,
+                      })),
+                    },
+                    {
+                      id: 'collections',
+                      title: 'Recent collections',
+                      items: recentCollections.map((c) => ({
+                        id: c.id,
+                        title: c.title,
+                        href: `/s/collections/${c.id}`,
+                      })),
+                    },
+                    {
+                      id: 'topics',
+                      title: 'Recent topics',
+                      items: recentTopics.map((t) => ({
+                        id: t.id,
+                        title: t.title,
+                        href: `/s/topics/${t.id}`,
+                      })),
+                    },
+                  ]}
+                  onClickOutside={handleSearchPopoverOutsideClick}
+                  className={'!right-64'}
+                  // className="flex-1 !rounded-full bg-zinc-200"
+                >
+                  <SearchBar
+                    className="w-full !rounded-full bg-zinc-200"
+                    onQueryChange={handleQueryChange}
+                    onQuerySubmit={handleQuerySubmit}
+                    onFocus={handleSearchBarFocus}
+                  />
+                </SearchPopover>
+              ) : (
+                <></>
+              )}
             </div>
 
             {session ? (
@@ -200,100 +212,105 @@ export default function GlobalNav() {
             )}
           </div>
 
-          {isSearchPage && searchQuery ? (
-            <div className="flex h-12 w-full flex-row items-center space-x-8 pl-4">
-              <TabNavItem
-                key="__photos__"
-                href={`/s/photos/${searchQuery}`}
-                itemId="__photos__"
-                isActive={selectedLayoutSegments[1] === 'photos'}
-                className={`flex flex-row items-center ${
-                  totalPhotos < 0 ? '' : 'space-x-2'
-                }`}
-              >
-                <div className="flex flex-row items-center space-x-1">
-                  <div className="h-5 w-5">
-                    {selectedLayoutSegments[1] === 'photos'
-                      ? SVG.SolidPhoto
-                      : SVG.OutlinePhoto}
+          {session ? (
+            isSearchPage && searchQuery ? (
+              <div className="flex h-12 w-full flex-row items-center space-x-8 pl-4">
+                <TabNavItem
+                  key="__photos__"
+                  href={`/s/photos/${searchQuery}`}
+                  itemId="__photos__"
+                  isActive={selectedLayoutSegments[1] === 'photos'}
+                  className={`flex flex-row items-center ${
+                    totalPhotos < 0 ? '' : 'space-x-2'
+                  }`}
+                >
+                  <div className="flex flex-row items-center space-x-1">
+                    <div className="h-5 w-5">
+                      {selectedLayoutSegments[1] === 'photos'
+                        ? SVG.SolidPhoto
+                        : SVG.OutlinePhoto}
+                    </div>
+                    <div>Photos</div>
                   </div>
-                  <div>Photos</div>
-                </div>
-                <div>
-                  {totalPhotos < 0
-                    ? ''
-                    : totalPhotos > 1000000
-                    ? `${Math.floor(totalPhotos / 1000000)}m`
-                    : totalPhotos > 1000
-                    ? `${Math.floor(totalPhotos / 1000)}k`
-                    : totalPhotos}
-                </div>
-              </TabNavItem>
-              <TabNavItem
-                key="__collections__"
-                href={`/s/collections/${searchQuery}`}
-                itemId="__collections__"
-                isActive={selectedLayoutSegments[1] === 'collections'}
-                className={`flex flex-row items-center ${
-                  totalCollections < 0 ? '' : 'space-x-2'
-                }`}
-              >
-                <div className="flex flex-row items-center space-x-1">
-                  <div className="h-5 w-5">
-                    {selectedLayoutSegments[1] === 'collections'
-                      ? SVG.SolidStack
-                      : SVG.OutlineStack}
+                  <div>
+                    {totalPhotos < 0
+                      ? ''
+                      : totalPhotos > 1000000
+                      ? `${Math.floor(totalPhotos / 1000000)}m`
+                      : totalPhotos > 1000
+                      ? `${Math.floor(totalPhotos / 1000)}k`
+                      : totalPhotos}
                   </div>
-                  <div>Collections</div>
-                </div>
-                <div>
-                  {totalCollections < 0
-                    ? ''
-                    : totalCollections > 1000000
-                    ? `${Math.floor(totalCollections / 1000000)}m`
-                    : totalCollections > 1000
-                    ? `${Math.floor(totalCollections / 1000)}k`
-                    : totalCollections}
-                </div>
-              </TabNavItem>
-              <TabNavItem
-                key="__uesrs__"
-                href={`/s/users/${searchQuery}`}
-                itemId="__users__"
-                isActive={selectedLayoutSegments[1] === 'users'}
-              >
-                Users
-              </TabNavItem>
-            </div>
-          ) : (
-            <div className="flex h-12 w-full flex-row items-center space-x-4 pl-4">
-              <TabNavItem
-                key="__home__"
-                href="/"
-                itemId="__home__"
-                isActive={selectedLayoutSegments.length === 0}
-              >
-                Home
-              </TabNavItem>
-              <div>
-                <div className="mt-2 mb-2 h-8 w-px bg-zinc-500" />
+                </TabNavItem>
+                <TabNavItem
+                  key="__collections__"
+                  href={`/s/collections/${searchQuery}`}
+                  itemId="__collections__"
+                  isActive={selectedLayoutSegments[1] === 'collections'}
+                  className={`flex flex-row items-center ${
+                    totalCollections < 0 ? '' : 'space-x-2'
+                  }`}
+                >
+                  <div className="flex flex-row items-center space-x-1">
+                    <div className="h-5 w-5">
+                      {selectedLayoutSegments[1] === 'collections'
+                        ? SVG.SolidStack
+                        : SVG.OutlineStack}
+                    </div>
+                    <div>Collections</div>
+                  </div>
+                  <div>
+                    {totalCollections < 0
+                      ? ''
+                      : totalCollections > 1000000
+                      ? `${Math.floor(totalCollections / 1000000)}m`
+                      : totalCollections > 1000
+                      ? `${Math.floor(totalCollections / 1000)}k`
+                      : totalCollections}
+                  </div>
+                </TabNavItem>
+                <TabNavItem
+                  key="__uesrs__"
+                  href={`/s/users/${searchQuery}`}
+                  itemId="__users__"
+                  isActive={selectedLayoutSegments[1] === 'users'}
+                >
+                  Users
+                </TabNavItem>
               </div>
-              <HorizonalScroller wrapperClassName="grow overflow-x-hidden h-full">
-                {topics.map((topic) => {
-                  const _isActive: boolean = `/topics/${topic.id}` === pathname;
-                  return (
-                    <TabNavItem
-                      key={topic.id}
-                      href={`/topics/${topic.id}`}
-                      itemId={topic.id}
-                      isActive={_isActive}
-                    >
-                      {topic.title}
-                    </TabNavItem>
-                  );
-                })}
-              </HorizonalScroller>
-            </div>
+            ) : (
+              <div className="flex h-12 w-full flex-row items-center space-x-4 pl-4">
+                <TabNavItem
+                  key="__home__"
+                  href="/"
+                  itemId="__home__"
+                  isActive={selectedLayoutSegments.length === 0}
+                >
+                  Home
+                </TabNavItem>
+                <div>
+                  <div className="mt-2 mb-2 h-8 w-px bg-zinc-500" />
+                </div>
+                <HorizonalScroller wrapperClassName="grow overflow-x-hidden h-full">
+                  {topics.map((topic) => {
+                    const _isActive: boolean =
+                      `/topics/${topic.id}` === pathname;
+                    return (
+                      <TabNavItem
+                        key={topic.id}
+                        href={`/topics/${topic.id}`}
+                        itemId={topic.id}
+                        isActive={_isActive}
+                      >
+                        {topic.title}
+                      </TabNavItem>
+                    );
+                  })}
+                </HorizonalScroller>
+              </div>
+            )
+          ) : (
+            <></>
           )}
         </>
       )}

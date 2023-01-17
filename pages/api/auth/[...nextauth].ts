@@ -25,6 +25,7 @@ export const authOptions: AuthOptions = {
       return isAllowedToSignIn;
     },
   },
+  secret: process.env.NEXTAUTH_SECRET,
 };
 
 export default NextAuth(authOptions);

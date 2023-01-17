@@ -8,10 +8,16 @@ import SvgButton from '@/ui/SvgButton';
 interface IPhoto {
   photo: Unsplash.Photo.Basic;
   favorite?: boolean;
+  isProtected?: boolean;
   onFavoriteChange: (id: string, isFavorite: boolean) => void;
 }
 
-export default function Photo({ photo, favorite, onFavoriteChange }: IPhoto) {
+export default function Photo({
+  photo,
+  favorite,
+  isProtected,
+  onFavoriteChange,
+}: IPhoto) {
   const [isHovered, setIsHovered] = useState<boolean>(false);
   const [isFavorite, setIsFavorite] = useState<boolean>(favorite || false);
 
@@ -32,7 +38,7 @@ export default function Photo({ photo, favorite, onFavoriteChange }: IPhoto) {
       onMouseLeave={() => setIsHovered(false)}
     >
       <img alt={photo.id} src={photo.urls.regular} />
-      {isHovered && (
+      {!isProtected && isHovered && (
         <div className="absolute left-0 top-0 z-10 h-full w-full bg-zinc-700 opacity-80">
           <div className="absolute top-0 left-0 right-0 flex w-full flex-row items-center justify-end p-4">
             <SvgButton
