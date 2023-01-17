@@ -15,19 +15,46 @@
     npm i
     ```
 
-2. Start the dev server:
+2. Create DB tables with Prisma 
+   
+   ```console
+   npx prisma db push
+   ```
+
+3. Open Prisma studio
+
+    ```console
+    npx prisma studio
+    ```
+
+4. Generate `NEXTAUTH_SECRET` in `.env` file
+   
+    ```console
+    openssl rand -base64 32
+    ```
+
+5. Create a Github OAuth app: [here](https://docs.github.com/en/developers/apps/building-oauth-apps/creating-an-oauth-app)
+
+    ```
+    GITHUB_ACCOUNT_ID=
+    GITHUB_ID=
+    GITHUB_SECRET=
+    NEXTAUTH_URL=http://localhost:3000/api/auth
+    ```
+
+6. Start the dev server:
 
     ```console
     npm run dev
     ```
 
-3. Start the dev server with Turbopack:
+7. Start the dev server with Turbopack:
 
     ```console
     npm run dev:turbopack
     ```
 
-4. See your binaries:
+8. See your binaries:
 
     ```console
     npx next info
