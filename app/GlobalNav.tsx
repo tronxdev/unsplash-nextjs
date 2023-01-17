@@ -7,7 +7,9 @@ import {
   usePathname,
   useRouter,
 } from 'next/navigation';
+import { signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
+import { Popover } from 'react-tiny-popover';
 import SearchBar from '@/ui/SearchBar';
 import SearchPopover from '@/ui/SearchPopover';
 import TabNavItem from '@/ui/TabNavItem';
@@ -18,10 +20,35 @@ import { useGlobal } from './GlobalContext';
 import { useSearchPhotos } from './s/SearchPhotosContext';
 import { useSearchCollections } from './s/SearchCollectionsContext';
 
+function UserPopoverContent() {
+  return (
+    <div className="mt-1 flex w-28 flex-col rounded border border-zinc-300 bg-white drop-shadow">
+      <Link
+        href="/"
+        className="cursor-pointer p-2 text-sm font-bold text-zinc-500 hover:text-zinc-700"
+      >
+        Account
+      </Link>
+      <div className="mx-1 h-[1px] bg-zinc-200"></div>
+      <div
+        className="cursor-pointer p-2 text-sm font-bold text-zinc-500 hover:text-zinc-700"
+        onClick={() => signOut()}
+      >
+        Log out
+      </div>
+    </div>
+  );
+}
+
 export default function GlobalNav() {
   const router = useRouter();
   const selectedLayoutSegments = useSelectedLayoutSegments();
   const pathname = usePathname();
+
+  const isActive: (_pathname: string) => boolean = (_pathname) =>
+    pathname === _pathname;
+
+  const { data: session, status } = useSession();
 
   const {
     topics,
@@ -38,6 +65,7 @@ export default function GlobalNav() {
   const [searchQuery, setSearchQuery] = useState<string>();
   const [isSearchPopoverOpen, setIsSearchPopoverOpen] =
     useState<boolean>(false);
+  const [isUserPopoverOpen, setIsUserPopoverOpen] = useState<boolean>(false);
 
   const isSearchPage: boolean = useMemo<boolean>(
     () =>
@@ -61,6 +89,14 @@ export default function GlobalNav() {
   const handleSearchPopoverOutsideClick = useCallback(() => {
     setIsSearchPopoverOpen(false);
   }, [setIsSearchPopoverOpen]);
+
+  const handleUserClick = useCallback(() => {
+    setIsUserPopoverOpen(true);
+  }, [setIsUserPopoverOpen]);
+
+  const handleUserPopoverOutsideClick = useCallback(() => {
+    setIsUserPopoverOpen(false);
+  }, [setIsUserPopoverOpen]);
 
   useEffect(() => {
     if (isSearchPage && selectedLayoutSegments) {
@@ -138,11 +174,30 @@ export default function GlobalNav() {
                 />
               </SearchPopover>
             </div>
-            {/* <SearchBar
-              defaultQuery=""
-              onQueryChange={() => {}}
-              className="flex-1 !rounded-full bg-zinc-200"
-            /> */}
+
+            {session ? (
+              <Popover
+                isOpen={isUserPopoverOpen}
+                positions={['bottom']}
+                onClickOutside={handleUserPopoverOutsideClick}
+                containerClassName={`!z-50`}
+                content={<UserPopoverContent />}
+              >
+                <div
+                  className="flex h-9 cursor-pointer flex-row items-center space-x-1 rounded-full bg-rose-500 px-2 text-xs text-white hover:bg-rose-600"
+                  onClick={handleUserClick}
+                >
+                  {SVG.OutlineUserCircle} <span>{session.user?.name}</span>
+                </div>
+              </Popover>
+            ) : (
+              <Link
+                href={'/api/auth/signin'}
+                className="cursor-pointer rounded-full bg-green-600 py-2 px-4 text-xs font-bold text-white hover:bg-green-700"
+              >
+                Log in
+              </Link>
+            )}
           </div>
 
           {isSearchPage && searchQuery ? (
@@ -225,13 +280,13 @@ export default function GlobalNav() {
               </div>
               <HorizonalScroller wrapperClassName="grow overflow-x-hidden h-full">
                 {topics.map((topic) => {
-                  const isActive: boolean = `/topics/${topic.id}` === pathname;
+                  const _isActive: boolean = `/topics/${topic.id}` === pathname;
                   return (
                     <TabNavItem
                       key={topic.id}
                       href={`/topics/${topic.id}`}
                       itemId={topic.id}
-                      isActive={isActive}
+                      isActive={_isActive}
                     >
                       {topic.title}
                     </TabNavItem>
