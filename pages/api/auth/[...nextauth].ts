@@ -13,11 +13,13 @@ export const authOptions: AuthOptions = {
   ],
   adapter: PrismaAdapter(prisma),
   callbacks: {
-    async signIn({ user }) {
+    async signIn({ user, account }) {
+      console.log(user);
+
       let isAllowedToSignIn = true;
       const allowedUser = [process.env.GITHUB_ACCOUNT_ID];
 
-      if (allowedUser.includes(String(user.id))) {
+      if (allowedUser.includes(String(account?.providerAccountId))) {
         isAllowedToSignIn = true;
       } else {
         isAllowedToSignIn = false;
