@@ -9,7 +9,7 @@ interface IPhoto {
   photo: Unsplash.Photo.Basic;
   favorite?: boolean;
   isProtected?: boolean;
-  onFavoriteChange: (id: string, isFavorite: boolean) => void;
+  onFavoriteChange: (isFavorite: boolean) => void;
 }
 
 export default function Photo({
@@ -28,7 +28,7 @@ export default function Photo({
   }, [photo.urls.raw]);
 
   useEffect(() => {
-    if (favorite !== isFavorite) debounced(photo.id, isFavorite);
+    if (favorite !== isFavorite) debounced(isFavorite);
   }, [favorite, isFavorite, debounced]);
 
   return (

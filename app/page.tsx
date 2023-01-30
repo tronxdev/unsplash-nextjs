@@ -139,7 +139,9 @@ function Page() {
               key={photo.id}
               photo={photo}
               favorite={!!photoLikes.find((p) => p === photo.id)}
-              onFavoriteChange={changePhotoLike}
+              onFavoriteChange={(isFavorite) =>
+                changePhotoLike(photo, isFavorite)
+              }
             />
           ))}
         </Masonry>
