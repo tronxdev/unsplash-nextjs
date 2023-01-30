@@ -9,6 +9,7 @@ import React, {
 } from 'react';
 import _ from 'lodash';
 import * as indexedDB from '@/lib/indexedDB';
+import fetcher from '@/lib/fetcher';
 import * as Unsplash from '@/types/unsplash';
 
 const PER_PAGE: number = 20;
@@ -24,7 +25,10 @@ const GlobalContext = createContext<
       recentTopics: Unsplash.Topic.Basic[];
       addRecentTopic: (t: Unsplash.Topic.Basic) => void;
       photoLikes: string[];
-      changePhotoLike: (id: string, favorite: boolean) => Promise<void>;
+      changePhotoLike: (
+        photo: Unsplash.Photo.Basic,
+        favorite: boolean,
+      ) => Promise<void>;
       loading: boolean;
     }
   | undefined
@@ -69,15 +73,23 @@ export function GlobalProvider({ children }: { children: React.ReactNode }) {
    * @returns Promise object
    * @description update the photo likes by photo ID in IndexedDB
    */
-  const changePhotoLike = useCallback(async (id: string, favorite: boolean) => {
-    if (favorite) {
-      await indexedDB.addPhotoLike(id);
-      setPhotoLikes((prev) => [...prev, id]);
-    } else {
-      await indexedDB.deletePhotoLike(id);
-      setPhotoLikes((prev) => prev.filter((p) => p !== id));
-    }
-  }, []);
+  const changePhotoLike = useCallback(
+    async (photo: Unsplash.Photo.Basic, favorite: boolean) => {
+      const res = await fetch(`${process.env.HOST}/api/favorite`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ photo, favorite }),
+      });
+      if (res.ok) {
+        setPhotoLikes((prev) =>
+          favorite ? [...prev, photo.id] : prev.filter((p) => p !== photo.id),
+        );
+      }
+    },
+    [],
+  );
 
   useEffect(() => {
     const fetchInitialData = async () => {
@@ -88,8 +100,8 @@ export function GlobalProvider({ children }: { children: React.ReactNode }) {
       setRecentQueries(cachedQueries.map((q) => q.query as string));
 
       // read photo likes from IndexedDB
-      const cachedPhotoLikes = await indexedDB.getPhotoLikes();
-      setPhotoLikes(cachedPhotoLikes.map((p) => p.photoId as string));
+      // const cachedPhotoLikes = await indexedDB.getPhotoLikes();
+      // setPhotoLikes(cachedPhotoLikes.map((p) => p.photoId as string));
 
       const res1 = await fetch(
         `${process.env.HOST}/api/search/photos?page=1&perPage=${PER_PAGE}&orderBy=${Unsplash.Search.ListPhotosOrderBy.POPULAR}`,
@@ -112,6 +124,14 @@ export function GlobalProvider({ children }: { children: React.ReactNode }) {
         setTopics(data.results);
       } else {
         setTopics([]);
+      }
+
+      const res3 = await fetch(`${process.env.HOST}/api/favorite`);
+
+      if (res3.ok) {
+        const data = await res3.json();
+        console.log(data);
+        setPhotoLikes(data.map((e) => e.id));
       }
 
       setLoading(false);

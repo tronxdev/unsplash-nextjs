@@ -15,7 +15,7 @@
     npm i
     ```
 
-2. Create DB tables with Prisma 
+2. Create DB tables with Prisma (**NOTE**: Run this command whenever you make changes to `schema.prisma` file)
    
    ```console
    npx prisma db push
