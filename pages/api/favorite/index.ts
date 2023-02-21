@@ -115,7 +115,7 @@ export default async function handler(
     }
 
     if (req.method === 'POST') {
-      const { photo, favorite } = req.body;
+      const { photo, liked } = req.body;
 
       const {
         id: photoId,
@@ -245,7 +245,7 @@ export default async function handler(
         update: { ...links, photoId },
       });
 
-      if (favorite) {
+      if (liked) {
         await prisma.unsplashFavorite.upsert({
           where: { userPhotoId: { photoId, userId: me.id } },
           create: { photoId: photo.id, userId: me.id },

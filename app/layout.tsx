@@ -1,9 +1,11 @@
 import '@/styles/dist.css';
+import 'react-tooltip/dist/react-tooltip.css';
+
 import React, { Suspense } from 'react';
 import { Session } from 'next-auth';
 import { headers } from 'next/headers';
 import Loading from './Loading';
-import Container from './Container';
+import Main from './main';
 
 async function getSession(cookie: string): Promise<Session> {
   const response = await fetch(`${process.env.NEXTAUTH_URL}/session`, {
@@ -31,7 +33,7 @@ export default async function RootLayout({
       </head>
       <body className="overflow-y-scroll bg-zinc-50">
         <Suspense fallback={<Loading />}>
-          <Container session={session}>{children}</Container>
+          <Main session={session}>{children}</Main>
         </Suspense>
       </body>
     </html>

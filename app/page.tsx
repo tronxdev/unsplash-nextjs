@@ -1,11 +1,15 @@
+/**
+ * HOME page
+ * This is a client component
+ */
+
 'use client';
 
 import { useCallback, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import InfiniteScroll from 'react-infinite-scroller';
-import Masonry from 'react-responsive-masonry';
-import * as indexedDB from '@/lib/indexedDB';
+import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry';
 import Photo from '@/ui/PhotoItem';
 import SearchBar from '@/ui/SearchBar';
 import SearchPopover from '@/ui/SearchPopover';
@@ -34,7 +38,6 @@ function Page() {
   const handleQueryChange = useCallback((q: string) => {}, []);
 
   const handleQuerySubmit = useCallback((q: string) => {
-    addRecentQuery(q);
     setIsSearchPopoverOpen(false);
 
     router.push(`/s/photos/${q.replaceAll(' ', '-')}`);
@@ -48,19 +51,8 @@ function Page() {
     setIsSearchPopoverOpen(false);
   }, [setIsSearchPopoverOpen]);
 
-  // const handlePhotoLikeChange = useCallback(
-  //   async (id: string, favorite: boolean) => {
-  //     if (favorite) {
-  //       await indexedDB.addPhotoLike(id);
-  //     } else {
-  //       await indexedDB.deletePhotoLike(id);
-  //     }
-  //   },
-  //   [],
-  // );
-
   return (
-    <div className="w-full space-y-8">
+    <div className="flex w-full flex-col items-center space-y-8">
       <div className="relative h-128 w-full bg-zinc-200">
         {bannerPhoto && (
           <Image
@@ -70,8 +62,8 @@ function Page() {
             quality={100}
             className="!z-0 object-cover object-center"
             sizes="1024px"
-            placeholder="blur"
-            blurDataURL={bannerPhoto.urls.small}
+            // placeholder="blur"
+            // blurDataURL={bannerPhoto.urls.small}
           />
         )}
         <div className="absolute !z-10 flex h-full w-full flex-col justify-center space-y-8 p-32">
@@ -131,20 +123,24 @@ function Page() {
         hasMore={hasMore}
         useWindow={true}
         threshold={250}
-        className="px-4"
+        className="w-full px-0 md:w-[720px] md:px-8 lg:w-[1024px] lg:px-16 xl:w-[1280px]"
       >
-        <Masonry gutter="2rem">
-          {photos.map((photo) => (
-            <Photo
-              key={photo.id}
-              photo={photo}
-              favorite={!!photoLikes.find((p) => p === photo.id)}
-              onFavoriteChange={(isFavorite) =>
-                changePhotoLike(photo, isFavorite)
-              }
-            />
-          ))}
-        </Masonry>
+        <ResponsiveMasonry
+          columnsCountBreakPoints={{ 350: 1, 640: 1, 768: 2, 1024: 3 }}
+        >
+          <Masonry gutter="24px">
+            {photos.map((photo) => (
+              <Photo
+                key={photo.id}
+                photo={photo}
+                favorite={!!photoLikes.find((p) => p === photo.id)}
+                onFavoriteChange={(isFavorite) =>
+                  changePhotoLike(photo, isFavorite)
+                }
+              />
+            ))}
+          </Masonry>
+        </ResponsiveMasonry>
       </InfiniteScroll>
     </div>
   );

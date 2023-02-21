@@ -49,6 +49,7 @@ model User {
   sessions      			Session[]
 
   favorites 					UnsplashFavorite[]
+  recentQueries       RecentQuery[]
 }
 
 model VerificationToken {
@@ -146,4 +147,15 @@ model UnsplashUser {
   accepted_tos       	Boolean             @default(false)
   
   photos							UnsplashPhoto[]
+}
+
+model RecentQuery {
+  id                  String              @id @default(cuid())
+  query               String
+  timestamp           DateTime            @default(now()) @updatedAt
+
+  userId              String              @map("user_id")
+  user								User				        @relation(fields: [userId], references: [id])
+
+  @@unique(fields: [query, userId], name: "queryUserId")
 }

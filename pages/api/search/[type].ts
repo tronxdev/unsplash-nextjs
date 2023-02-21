@@ -1,15 +1,22 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import NextCors from 'nextjs-cors';
+import { getSession } from 'next-auth/react';
 import { StatusCodes, getReasonPhrase } from 'http-status-codes';
 import * as Unsplash from '@/types/unsplash';
 import unsplashClient from '@/lib/unsplash';
 import { connect } from '@/lib/sequelize';
 import * as Api from '@/types/api';
+import prisma from '@/lib/prisma';
+import type { RecentQuery } from '@prisma/client';
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<
-    Unsplash.Search.Photos | Unsplash.Search.Collections | Api.Error | undefined
+    | Unsplash.Search.Photos
+    | (Unsplash.Search.Photos & { recentQueries: RecentQuery[] })
+    | Unsplash.Search.Collections
+    | Api.Error
+    | undefined
   >,
 ) {
   try {
@@ -39,7 +46,41 @@ export default async function handler(
           orderBy: orderBy || Unsplash.Search.SearchPhotoOrderBy.RELEVANT,
         });
 
-        res.status(StatusCodes.OK).json(response);
+        // at the first search
+        if (page === 1) {
+          const session = await getSession({ req });
+
+          if (session) {
+            const me = await prisma.user.findUnique({
+              where: { email: session?.user?.email! },
+            });
+
+            if (me) {
+              // add/update the passed recent query
+              // read 5 latest queries
+              await prisma.recentQuery.upsert({
+                where: { queryUserId: { query, userId: me.id } },
+                create: { query, userId: me.id },
+                update: { timestamp: new Date() },
+              });
+
+              const _recentQueries = await prisma.recentQuery.findMany({
+                where: { userId: me.id },
+                orderBy: { timestamp: 'desc' },
+                take: 5,
+              });
+
+              return res.status(StatusCodes.OK).send({
+                ...response,
+                recentQueries: _recentQueries || [],
+              } as Unsplash.Search.Photos & {
+                recentQueries: RecentQuery[];
+              });
+            }
+          }
+        }
+
+        res.status(StatusCodes.OK).send(response as Unsplash.Search.Photos);
       } else {
         const orderBy: Unsplash.Search.ListPhotosOrderBy | undefined = req.query
           .orderBy as Unsplash.Search.ListPhotosOrderBy | undefined;
@@ -50,7 +91,35 @@ export default async function handler(
           orderBy: orderBy || Unsplash.Search.ListPhotosOrderBy.LATEST,
         });
 
-        res.status(StatusCodes.OK).json(response);
+        // first page fetch
+        if (page === 1) {
+          const session = await getSession({ req });
+
+          if (session) {
+            const me = await prisma.user.findUnique({
+              where: { email: session?.user?.email! },
+            });
+
+            if (me) {
+              // read 5 latest queries
+              const recentQueries: RecentQuery[] =
+                await prisma.recentQuery.findMany({
+                  where: { userId: me.id },
+                  orderBy: { timestamp: 'desc' },
+                  take: 5,
+                });
+
+              return res.status(StatusCodes.OK).send({
+                ...response,
+                recentQueries,
+              } as Unsplash.Search.Photos & {
+                recentQueries: RecentQuery[];
+              });
+            }
+          }
+        }
+
+        res.status(StatusCodes.OK).json(response as Unsplash.Search.Photos);
       }
     }
 

@@ -25,8 +25,8 @@ function Page() {
             quality={100}
             className="!z-0 object-cover object-center"
             sizes="1024px"
-            placeholder="blur"
-            blurDataURL={bannerPhoto.urls.small}
+            // placeholder="blur"
+            // blurDataURL={bannerPhoto.urls.small}
           />
         )}
         <div className="absolute !z-10 flex h-full w-full flex-col justify-center space-y-8 p-32">

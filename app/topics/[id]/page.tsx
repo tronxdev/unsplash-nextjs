@@ -35,8 +35,8 @@ export default function Page({ params }: { params: { id: string } }) {
                 fill={true}
                 quality={100}
                 className="object-cover object-center"
-                placeholder="blur"
-                blurDataURL={topic.cover_photo?.blur_hash || ''}
+                // placeholder="blur"
+                // blurDataURL={topic.cover_photo?.blur_hash || ''}
                 sizes="640px"
               />
             )}
