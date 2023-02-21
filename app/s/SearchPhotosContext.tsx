@@ -8,7 +8,9 @@ import React, {
   useState,
 } from 'react';
 import _ from 'lodash';
+import { useGlobal } from 'app/GlobalContext';
 import * as Unsplash from '@/types/unsplash';
+import type { RecentQuery } from '@prisma/client';
 
 const PER_PAGE: number = 20;
 
@@ -33,6 +35,8 @@ export function SearchPhotosProvider({
 }: {
   children: React.ReactNode;
 }) {
+  const { setRecentQueries } = useGlobal();
+
   const [query, setQuery] = useState<string>('');
   const [page, setPage] = useState<number>(0);
   const [perPage, setPerPage] = useState<number>(PER_PAGE);
@@ -65,6 +69,7 @@ export function SearchPhotosProvider({
 
   useEffect(() => {
     async function fetchInitialData() {
+      setRecentQueries((prev) => _.uniq([query, ...prev]).slice(0, 5));
       setLoading(true);
       setPage(0);
       setPhotos([]);
@@ -76,8 +81,13 @@ export function SearchPhotosProvider({
       );
 
       if (res.ok) {
-        const data = await res.json();
+        const data = (await res.json()) as Unsplash.Search.Photos & {
+          recentQueries?: RecentQuery[];
+        };
         setTotal(data.total);
+        setRecentQueries(
+          data.recentQueries ? data.recentQueries.map((q) => q.query) : [],
+        );
       }
 
       setLoading(false);

@@ -117,7 +117,7 @@ export default function GlobalNav() {
   const handleQueryChange = useCallback((q: string) => {}, []);
 
   const handleQuerySubmit = useCallback((q: string) => {
-    addRecentQuery(q);
+    // addRecentQuery(q);
     setIsSearchPopoverOpen(false);
 
     router.push(`/s/photos/${q.replaceAll(' ', '-')}`);
@@ -150,11 +150,11 @@ export default function GlobalNav() {
     }
   }, [isSearchPage, selectedLayoutSegments]);
 
-  useEffect(() => {
-    if (!session) {
-      router.push('/dashboard');
-    }
-  }, [session, router]);
+  // useEffect(() => {
+  //   if (!session) {
+  //     router.push('/dashboard');
+  //   }
+  // }, [session, router]);
 
   if (status === 'authenticated' && !!session) {
     return (
@@ -218,6 +218,7 @@ export default function GlobalNav() {
               >
                 <SearchBar
                   className="w-full !rounded-full bg-zinc-200"
+                  defaultQuery={searchQuery}
                   onQueryChange={handleQueryChange}
                   onQuerySubmit={handleQuerySubmit}
                   onFocus={handleSearchBarFocus}

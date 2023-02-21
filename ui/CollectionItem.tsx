@@ -24,11 +24,13 @@ export default function CollectionItem({ collection }: ICollectionItem) {
           {preview_photos && preview_photos[0] && (
             <Image
               alt={preview_photos[0].id}
-              src={preview_photos[0].urls.regular}
+              src={preview_photos[0].urls.thumb}
               fill={true}
               quality={100}
+              placeholder="blur"
+              blurDataURL={preview_photos[0].urls.thumb}
               className="object-cover object-center"
-              sizes="640px"
+              sizes="160px"
             />
           )}
         </div>
@@ -40,8 +42,10 @@ export default function CollectionItem({ collection }: ICollectionItem) {
                 src={preview_photos[1].urls.small}
                 fill={true}
                 quality={100}
+                placeholder="blur"
+                blurDataURL={preview_photos[0].urls.thumb}
                 className="object-cover object-center"
-                sizes="640px"
+                sizes="160px"
               />
             )}
           </div>
@@ -52,8 +56,10 @@ export default function CollectionItem({ collection }: ICollectionItem) {
                 src={preview_photos[2].urls.regular}
                 fill={true}
                 quality={100}
+                placeholder="blur"
+                blurDataURL={preview_photos[0].urls.thumb}
                 className="object-cover object-center"
-                sizes="640px"
+                sizes="160px"
               />
             )}
           </div>
